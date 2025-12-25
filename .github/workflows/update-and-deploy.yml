@@ -1,0 +1,108 @@
+name: Update Products and Deploy to AWS
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+      - 'src/**'
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      # Install dependencies
+      - name: Install dependencies
+        run: npm ci
+      
+      # Fetch latest products from Amazon
+      - name: Fetch Amazon products
+        env:
+          AMAZON_ACCESS_KEY: ${{ secrets.AMAZON_ACCESS_KEY }}
+          AMAZON_SECRET_KEY: ${{ secrets.AMAZON_SECRET_KEY }}
+          AMAZON_PARTNER_TAG: ${{ secrets.AMAZON_PARTNER_TAG }}
+        run: node scripts/fetch-products.js
+        continue-on-error: true  # Don't fail if Amazon API not set up yet
+      
+      # Generate AI blog posts
+      - name: Generate blog posts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/generate-blogs.js
+        continue-on-error: true  # Don't fail if no products yet
+      
+      # Build the site
+      - name: Build production site
+        run: npm run build
+      
+      # Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      # Deploy to S3
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/ s3://my-affiliate-site \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html" \
+            --exclude "*.json"
+          
+          # Upload index.html and JSON with shorter cache
+          aws s3 sync dist/ s3://my-affiliate-site \
+            --exclude "*" \
+            --include "index.html" \
+            --include "*.json" \
+            --cache-control "public, max-age=0, must-revalidate"
+      
+      # Invalidate CloudFront cache
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+      
+      # Commit generated content
+      - name: Commit updated products and blogs
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/data public/blogs || true
+          git diff --quiet && git diff --staged --quiet || \
+            (git commit -m "🤖 Auto-update: New products and blogs - $(date +'%Y-%m-%d %H:%M')" && git push)
+      
+      # Summary
+      - name: Deployment summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ DEPLOYMENT COMPLETE!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "🌐 Site URL: https://d123456789abcd.cloudfront.net"
+          echo "📦 S3 Bucket: my-affiliate-site"
+          echo "⚡ CloudFront: Cache invalidated"
+          echo "📝 New content committed to repo"
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
