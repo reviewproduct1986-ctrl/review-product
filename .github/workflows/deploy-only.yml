@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # Manual trigger only
   push:
     branches:
-      - main
+      - production
     paths:
       - 'src/**'
       - 'public/**'
