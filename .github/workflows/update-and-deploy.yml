@@ -15,9 +15,6 @@ on:
       - 'webpack.config.js'
       - '.github/workflows/**'
 
-  # Allow manual trigger anytime
-  workflow_dispatch:
-
 env:
   AWS_REGION: us-east-1
   S3_BUCKET: my-affiliate-site
