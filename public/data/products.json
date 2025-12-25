@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": "1766640475561-1",
+      "id": "1766641328523-1",
       "title": "Premium Wireless Noise Cancelling Headphones",
       "category": "Electronics",
       "price": 299.99,
@@ -9,7 +9,7 @@
       "reviews": 12453,
       "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
       "asin": "B08EXAMPLE1",
-      "affiliate": "https://amazon.com/dp/B08EXAMPLE1?tag=undefined",
+      "affiliate": "https://amazon.com/dp/B08EXAMPLE1?tag=temp",
       "badge": "Best Seller",
       "features": [
         "Active Noise Cancellation",
@@ -18,10 +18,10 @@
         "Comfortable fit"
       ],
       "description": "Experience premium audio with advanced noise cancellation technology.",
-      "lastUpdated": "2025-12-25T05:27:55.561Z"
+      "lastUpdated": "2025-12-25T05:42:08.523Z"
     },
     {
-      "id": "1766640475565-2",
+      "id": "1766641328523-2",
       "title": "Smart Fitness Watch with Heart Rate Monitor",
       "category": "Health & Fitness",
       "price": 249.99,
@@ -29,7 +29,7 @@
       "reviews": 8932,
       "image": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
       "asin": "B08EXAMPLE2",
-      "affiliate": "https://amazon.com/dp/B08EXAMPLE2?tag=undefined",
+      "affiliate": "https://amazon.com/dp/B08EXAMPLE2?tag=temp",
       "badge": "Trending",
       "features": [
         "Heart rate monitoring",
@@ -38,10 +38,10 @@
         "7-day battery life"
       ],
       "description": "Track your fitness goals with advanced health monitoring.",
-      "lastUpdated": "2025-12-25T05:27:55.565Z"
+      "lastUpdated": "2025-12-25T05:42:08.523Z"
     },
     {
-      "id": "1766640475565-3",
+      "id": "1766641328523-3",
       "title": "Ergonomic Office Chair with Lumbar Support",
       "category": "Home & Office",
       "price": 399.99,
@@ -49,7 +49,7 @@
       "reviews": 15621,
       "image": "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=400&h=400&fit=crop",
       "asin": "B08EXAMPLE3",
-      "affiliate": "https://amazon.com/dp/B08EXAMPLE3?tag=undefined",
+      "affiliate": "https://amazon.com/dp/B08EXAMPLE3?tag=temp",
       "badge": "Top Rated",
       "features": [
         "Adjustable lumbar support",
@@ -58,12 +58,12 @@
         "Weight capacity: 300 lbs"
       ],
       "description": "Professional ergonomic chair designed for all-day comfort.",
-      "lastUpdated": "2025-12-25T05:27:55.565Z"
+      "lastUpdated": "2025-12-25T05:42:08.523Z"
     }
   ],
   "metadata": {
     "totalProducts": 3,
-    "lastUpdated": "2025-12-25T05:27:55.566Z",
+    "lastUpdated": "2025-12-25T05:42:08.524Z",
     "categories": [
       "Electronics",
       "Health & Fitness",
