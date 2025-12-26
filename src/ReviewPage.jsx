@@ -188,12 +188,27 @@ export default function ReviewPage() {
       {/* Review Content */}
       <main className="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">
         {/* Breadcrumb */}
-        <nav className="mb-6 text-sm">
-          <Link to="/" className="text-violet-600 hover:text-violet-700">Home</Link>
-          <span className="mx-2 text-slate-400">/</span>
-          <Link to="/" className="text-violet-600 hover:text-violet-700">Reviews</Link>
-          <span className="mx-2 text-slate-400">/</span>
-          <span className="text-slate-600">{product.title}</span>
+        <nav className="mb-6" aria-label="Breadcrumb">
+          <ol className="flex items-center gap-2 text-sm text-slate-600">
+            <li>
+              <Link to="/" className="hover:text-violet-600 transition-colors">
+                Home
+              </Link>
+            </li>
+            <li className="text-slate-400">/</li>
+            <li>
+              <Link 
+                to={`/?category=${encodeURIComponent(product.category)}`}
+                className="hover:text-violet-600 transition-colors"
+              >
+                {product.category}
+              </Link>
+            </li>
+            <li className="text-slate-400">/</li>
+            <li className="text-slate-900 font-medium truncate max-w-md">
+              {product.title}
+            </li>
+          </ol>
         </nav>
 
         {/* Article */}
@@ -221,7 +236,12 @@ export default function ReviewPage() {
                 <span className="font-semibold text-slate-900">{product.rating}</span>
                 <span className="text-sm">({product.reviews.toLocaleString()} reviews)</span>
               </div>
-              <span className="text-2xl font-bold text-violet-600">${product.price}</span>
+              <div>
+                <span className="text-2xl font-bold text-violet-600">${product.price}</span>
+                <p className="text-xs text-slate-500 mt-1">
+                  Price may vary. Check Amazon for current price and availability.
+                </p>
+              </div>
             </div>
           </div>
 
@@ -229,7 +249,7 @@ export default function ReviewPage() {
           <div>
             <img
               src={product.image}
-              alt={product.title}
+              alt={`${product.title} - ${product.category} Review - ${product.rating} Stars - Amazon Product`}
               className="w-full h-96 object-cover rounded-2xl shadow-lg"
             />
           </div>
@@ -242,19 +262,19 @@ export default function ReviewPage() {
                   href={product.affiliate}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3 px-8 rounded-xl font-bold text-base hover:shadow-lg hover:shadow-violet-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                   onClick={() => {
-                  // Track affiliate click
-                  if (typeof gtag !== 'undefined') {
-                    gtag('event', 'affiliate_click', {
-                      event_category: 'Affiliate',
-                      event_label: product.title,
-                      value: product.price,
-                      product_category: product.category,
-                      product_price: product.price
-                    });
-                  }
-                }}
+                    // Track affiliate click in Google Analytics
+                    if (typeof gtag !== 'undefined') {
+                      gtag('event', 'affiliate_click', {
+                        event_category: 'Affiliate',
+                        event_label: product.title,
+                        value: product.price,
+                        product_category: product.category,
+                        product_id: product.id
+                      });
+                    }
+                  }}
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3 px-8 rounded-xl font-bold text-base hover:shadow-lg hover:shadow-violet-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                 >
                   View on Amazon
                   <ArrowRight size={20} />
