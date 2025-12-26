@@ -161,9 +161,9 @@ async function fetchAmazonProducts() {
 }
 
 /**
- * Save products to JSON file
+ * Save products to JSON file - MERGES with existing products
  */
-function saveProducts(products) {
+function saveProducts(newProducts) {
   const dataDir = path.join(__dirname, '../public/data');
   
   // Create data directory if it doesn't exist
@@ -173,17 +173,73 @@ function saveProducts(products) {
 
   const filePath = path.join(dataDir, 'products.json');
   
+  // Load existing products
+  let existingProducts = [];
+  if (fs.existsSync(filePath)) {
+    try {
+      const existingData = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+      existingProducts = existingData.products || [];
+      console.log(`📦 Found ${existingProducts.length} existing products`);
+    } catch (error) {
+      console.warn('⚠️  Could not read existing products.json, will create new file');
+    }
+  }
+
+  // Create a map of existing products by ID or ASIN
+  const existingMap = new Map();
+  existingProducts.forEach(product => {
+    const key = product.asin || product.id;
+    existingMap.set(key, product);
+  });
+
+  // Merge new products with existing ones
+  let addedCount = 0;
+  let updatedCount = 0;
+
+  newProducts.forEach(newProduct => {
+    const key = newProduct.asin || newProduct.id;
+    
+    if (existingMap.has(key)) {
+      // Update existing product
+      existingMap.set(key, {
+        ...existingMap.get(key),
+        ...newProduct,
+        // Keep original ID if exists
+        id: existingMap.get(key).id,
+        // Update timestamp
+        lastUpdated: new Date().toISOString()
+      });
+      updatedCount++;
+    } else {
+      // Add new product
+      existingMap.set(key, newProduct);
+      addedCount++;
+    }
+  });
+
+  // Convert map back to array
+  const allProducts = Array.from(existingMap.values());
+
   const data = {
-    products,
+    products: allProducts,
     metadata: {
-      totalProducts: products.length,
-      lastUpdated: new Date().toISOString(),
-      categories: [...new Set(products.map(p => p.category))]
+      total: allProducts.length,
+      updated: new Date().toISOString()
     }
   };
 
-  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-  console.log(`✅ Saved ${products.length} products to ${filePath}`);
+  // Save minified JSON (no spaces) for production
+  fs.writeFileSync(filePath, JSON.stringify(data));
+  
+  console.log(`✅ Saved products to ${filePath}`);
+  console.log(`   - Added: ${addedCount} new products`);
+  console.log(`   - Updated: ${updatedCount} existing products`);
+  console.log(`   - Total: ${allProducts.length} products`);
+  
+  // Calculate file size
+  const stats = fs.statSync(filePath);
+  const fileSizeKB = (stats.size / 1024).toFixed(2);
+  console.log(`   - File size: ${fileSizeKB} KB (minified)`);
 }
 
 /**

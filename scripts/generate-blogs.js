@@ -58,8 +58,6 @@ function loadExistingBlogs() {
  * Generate blog post for a product using Claude AI
  */
 async function generateBlogPost(product) {
-  console.log(`📝 Generating blog post for: ${product.title}`);
-
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -157,25 +155,70 @@ async function generateMissingBlogs(products, existingBlogs) {
   
   if (productsNeedingBlogs.length === 0) {
     console.log('✅ All products already have blog posts!');
+    console.log('   No API calls needed - saving money! 💰');
     return existingBlogs.posts;
   }
+
+  // Cost estimation
+  const estimatedTokensPerPost = 4000; // max_tokens setting
+  const costPer1MTokens = 3.00; // Claude Sonnet 4 output cost
+  const estimatedCost = (productsNeedingBlogs.length * estimatedTokensPerPost / 1000000) * costPer1MTokens;
+  
+  console.log('');
+  console.log('💰 COST ESTIMATION:');
+  console.log(`   - Products needing blogs: ${productsNeedingBlogs.length}`);
+  console.log(`   - Estimated tokens: ~${(productsNeedingBlogs.length * estimatedTokensPerPost).toLocaleString()}`);
+  console.log(`   - Estimated cost: ~$${estimatedCost.toFixed(2)} USD`);
+  console.log('');
+  console.log('📋 Products that will be processed:');
+  productsNeedingBlogs.forEach((p, i) => {
+    console.log(`   ${i + 1}. ${p.title}`);
+  });
+  console.log('');
+  console.log('💡 TIP: Only products without existing blogs will be processed.');
+  console.log('   Already generated blogs are preserved to save costs.');
+  console.log('');
 
   console.log(`🤖 Generating blog posts for ${productsNeedingBlogs.length} products...`);
   
   const newBlogPosts = [];
+  let successCount = 0;
+  let failCount = 0;
   
   // Generate posts sequentially to avoid rate limits
-  for (const product of productsNeedingBlogs) {
+  for (let i = 0; i < productsNeedingBlogs.length; i++) {
+    const product = productsNeedingBlogs[i];
+    console.log(`[${i + 1}/${productsNeedingBlogs.length}] Generating blog for: ${product.title}`);
+    
     const blog = await generateBlogPost(product);
     if (blog) {
       newBlogPosts.push(blog);
-      // Small delay to avoid rate limiting
+      successCount++;
+      console.log(`   ✅ Success! Generated ${blog.content.length} characters of content`);
+    } else {
+      failCount++;
+      console.log(`   ❌ Failed to generate blog`);
+    }
+    
+    // Small delay to avoid rate limiting
+    if (i < productsNeedingBlogs.length - 1) {
+      console.log('   ⏳ Waiting 2s to avoid rate limits...');
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
   }
 
+  console.log('');
+  console.log('📊 GENERATION SUMMARY:');
+  console.log(`   - Success: ${successCount}`);
+  console.log(`   - Failed: ${failCount}`);
+  console.log(`   - Total new blogs: ${newBlogPosts.length}`);
+  console.log('');
+
   // Combine existing and new blogs
-  return [...existingBlogs.posts, ...newBlogPosts];
+  const allBlogs = [...existingBlogs.posts, ...newBlogPosts];
+  console.log(`💾 Final blog count: ${allBlogs.length} total (${existingBlogs.posts.length} existing + ${newBlogPosts.length} new)`);
+  
+  return allBlogs;
 }
 
 /**
@@ -197,34 +240,24 @@ function saveBlogPosts(blogPosts) {
   const blogsData = {
     posts: blogPosts,
     metadata: {
-      totalPosts: blogPosts.length,
-      lastUpdated: new Date().toISOString(),
-      categories: [...new Set(blogPosts.map(b => {
-        // Get category from first product in products.json that matches
-        const publicPath = path.join(dataDirPublic, 'products.json');
-        const localPath = path.join(dataDir, 'products.json');
-        const productsFile = fs.existsSync(publicPath) ? publicPath : localPath;
-        
-        if (fs.existsSync(productsFile)) {
-          const products = JSON.parse(fs.readFileSync(productsFile, 'utf-8'));
-          const productList = products.products || products;
-          const product = productList.find(p => p.id === b.productId);
-          return product?.category || 'Uncategorized';
-        }
-        return 'Uncategorized';
-      }))]
+      total: blogPosts.length,
+      updated: new Date().toISOString()
     }
   };
   
-  // Save to both locations
+  // Save to both locations - minified JSON (no spaces) for faster loading
   const jsonPathPublic = path.join(dataDirPublic, 'blogs.json');
   const jsonPath = path.join(dataDir, 'blogs.json');
   
-  fs.writeFileSync(jsonPathPublic, JSON.stringify(blogsData, null, 2));
-  fs.writeFileSync(jsonPath, JSON.stringify(blogsData, null, 2));
+  fs.writeFileSync(jsonPathPublic, JSON.stringify(blogsData));
+  fs.writeFileSync(jsonPath, JSON.stringify(blogsData));
+  
+  // Calculate file sizes
+  const statsPublic = fs.statSync(jsonPathPublic);
+  const fileSizeKB = (statsPublic.size / 1024).toFixed(2);
   
   console.log(`✅ Saved ${blogPosts.length} blog posts to:`);
-  console.log(`   - ${jsonPathPublic}`);
+  console.log(`   - ${jsonPathPublic} (${fileSizeKB} KB minified)`);
   console.log(`   - ${jsonPath}`);
   console.log(`   React Router will handle rendering at /reviews/:slug`);
 }
@@ -259,15 +292,33 @@ async function main() {
 
     saveBlogPosts(allBlogs);
     
+    const newPostsCount = allBlogs.length - existingBlogs.posts.length;
+    
     console.log('🎉 Blog generation completed successfully!');
-    console.log(`   - Total posts: ${allBlogs.length}`);
-    console.log(`   - New posts: ${allBlogs.length - existingBlogs.posts.length}`);
-    console.log(`   - Average keywords: ${(allBlogs.reduce((sum, b) => sum + b.keywords.length, 0) / allBlogs.length).toFixed(1)}`);
     console.log('');
+    console.log('📊 FINAL STATISTICS:');
+    console.log(`   - Total posts: ${allBlogs.length}`);
+    console.log(`   - Existing posts (preserved): ${existingBlogs.posts.length}`);
+    console.log(`   - New posts (generated): ${newPostsCount}`);
+    console.log(`   - Average keywords per post: ${(allBlogs.reduce((sum, b) => sum + (b.keywords?.length || 0), 0) / allBlogs.length).toFixed(1)}`);
+    console.log('');
+    
+    if (existingBlogs.posts.length > 0) {
+      const savedCost = (existingBlogs.posts.length * 4000 / 1000000) * 3.00;
+      console.log('💰 COST SAVINGS:');
+      console.log(`   - Blogs skipped (already exist): ${existingBlogs.posts.length}`);
+      console.log(`   - Estimated savings: ~$${savedCost.toFixed(2)} USD`);
+      console.log(`   - Only paid for ${newPostsCount} new blog(s)! ✅`);
+      console.log('');
+    }
+    
     console.log('📍 Blog posts available at:');
-    allBlogs.forEach(blog => {
+    allBlogs.slice(0, 5).forEach(blog => {
       console.log(`   - /reviews/${blog.slug}`);
     });
+    if (allBlogs.length > 5) {
+      console.log(`   ... and ${allBlogs.length - 5} more`);
+    }
     console.log('');
     console.log('💡 Next step: Run generate-sitemap.js to update sitemap.xml');
     

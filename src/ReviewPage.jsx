@@ -270,13 +270,10 @@ export default function ReviewPage() {
                   View More Products
                 </Link>
               </div>
-              {/* Affiliate Disclosure - Prominent */}
-              <div className="mt-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
-                <p className="text-sm text-slate-700 font-medium">
-                  <span className="text-amber-600 font-bold">⚠️ Disclosure:</span> This is an affiliate link. 
-                  We may earn a commission if you make a purchase at no additional cost to you.
-                </p>
-              </div>
+              {/* Affiliate Disclosure - Subtle */}
+              <p className="mt-6 text-xs text-slate-500 text-center">
+                This is an affiliate link. We may earn a commission at no additional cost to you.
+              </p>
             </div>
           </div>
         </article>
