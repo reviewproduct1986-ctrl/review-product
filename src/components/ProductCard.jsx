@@ -90,6 +90,11 @@ export default function ProductCard({ product, index }) {
               <span>No Review</span>
             </div>
           )}
+          
+          {/* Affiliate Disclosure */}
+          <p className="text-xs text-slate-500 text-center mt-1">
+            <span className="text-violet-600">*</span> Affiliate link - We may earn a commission
+          </p>
         </div>
       </div>
     </div>

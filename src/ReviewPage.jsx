@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, ArrowRight, ArrowLeft, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import Footer from './components/Footer';
 
 export default function ReviewPage() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   
   const [product, setProduct] = useState(null);
   const [blog, setBlog] = useState(null);
@@ -268,6 +270,13 @@ export default function ReviewPage() {
                   View More Products
                 </Link>
               </div>
+              {/* Affiliate Disclosure - Prominent */}
+              <div className="mt-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
+                <p className="text-sm text-slate-700 font-medium">
+                  <span className="text-amber-600 font-bold">⚠️ Disclosure:</span> This is an affiliate link. 
+                  We may earn a commission if you make a purchase at no additional cost to you.
+                </p>
+              </div>
             </div>
           </div>
         </article>
@@ -306,23 +315,7 @@ export default function ReviewPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="text-white" size={20} />
-              </div>
-              <p className="font-bold text-white text-lg">
-                GetProductOpinion.
-              </p>
-            </div>
-            <p className="text-sm text-slate-400">
-              Expert product curation and unbiased reviews © 2024
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       <style>{`
         .glass-morphism {
