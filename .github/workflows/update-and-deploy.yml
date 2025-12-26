@@ -99,14 +99,19 @@ jobs:
           
           echo "✅ S3 upload complete"
       
-      - name: ⚡ Invalidate CloudFront cache
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+      - name: ⚡ Invalidate CloudFront cache (if configured)
+        env:
+          DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
-          echo "Invalidating CloudFront cache..."
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
-          echo "✅ CloudFront invalidation triggered"
+          if [ -n "$DISTRIBUTION_ID" ]; then
+            echo "🔄 Invalidating CloudFront cache..."
+            aws cloudfront create-invalidation \
+              --distribution-id $DISTRIBUTION_ID \
+              --paths "/*"
+            echo "✅ CloudFront invalidation triggered"
+          else
+            echo "ℹ️  CloudFront not configured, skipping cache invalidation"
+          fi
       
       - name: 💾 Commit generated content
         run: |
@@ -127,6 +132,8 @@ jobs:
       
       - name: 📊 Deployment summary
         if: always()
+        env:
+          DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -139,7 +146,7 @@ jobs:
           echo "Time: $(date +'%Y-%m-%d %H:%M:%S UTC')"
           echo ""
           echo "🌐 Check your site:"
-          if [ -n "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" ]; then
+          if [ -n "$DISTRIBUTION_ID" ]; then
             echo "   CloudFront: https://[your-distribution].cloudfront.net"
           fi
           echo "   S3 Website: http://${{ env.S3_BUCKET }}.s3-website-${{ env.AWS_REGION }}.amazonaws.com"
