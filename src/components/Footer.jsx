@@ -34,7 +34,7 @@ export default function Footer() {
             </p>
           </div>
           <p className="text-sm text-slate-400">
-            Honest product reviews and candid findings © 2024-2025
+            Honest product reviews and candid findings © 2025
           </p>
         </div>
       </div>

@@ -133,18 +133,16 @@ export default function ReviewPage() {
               </div>
               <div className="hidden sm:block">
                 <h1 className="font-bold text-slate-900 text-base lg:text-lg leading-tight group-hover:text-violet-600 transition-colors">
-                  GetProductOpinion.
+                  CandidFindings
                 </h1>
-                <p className="text-xs text-slate-500 leading-tight">Expert Recommendations</p>
+                <p className="text-xs text-slate-500 leading-tight">Honest Recommendations</p>
               </div>
             </Link>
             <Link
               to="/"
-              className="flex items-center gap-1.5 px-3 py-1.5 text-slate-600 hover:text-violet-600 transition-colors text-sm font-medium hover:bg-slate-50 rounded-lg"
+              className="px-4 py-2 text-violet-600 hover:text-violet-700 transition-colors text-sm font-semibold bg-white border-2 border-violet-200 hover:border-violet-300 hover:bg-violet-50 rounded-lg"
             >
-              <ArrowLeft size={16} />
-              <span className="hidden sm:inline">Back to Products</span>
-              <span className="sm:hidden">Back</span>
+              View More Products
             </Link>
           </div>
         </div>
@@ -191,12 +189,29 @@ export default function ReviewPage() {
           </div>
 
           {/* Hero Image */}
-          <div className="mb-10">
+          <div>
             <img
               src={product.image}
               alt={product.title}
               className="w-full h-96 object-cover rounded-2xl shadow-lg"
             />
+          </div>
+
+          {/* Quick Buy Section - Sticky & Compact */}
+          <div className="sticky top-16 z-30 mb-10 -mx-6 md:-mx-12">
+            <div className="bg-white/95 backdrop-blur-md border-b-2 border-violet-200 shadow-lg px-6 md:px-12 py-4">
+              <div className="flex items-center justify-center">
+                <a
+                  href={product.affiliate}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3 px-8 rounded-xl font-bold text-base hover:shadow-lg hover:shadow-violet-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                >
+                  View on Amazon
+                  <ArrowRight size={20} />
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Review Content */}
@@ -268,37 +283,6 @@ export default function ReviewPage() {
                 </div>
               </>
             )}
-          </div>
-
-          {/* CTA Section */}
-          <div className="mt-12 p-8 bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl border-2 border-violet-200">
-            <div className="text-center">
-              <h3 className="text-2xl font-bold text-slate-900 mb-3">Ready to Buy?</h3>
-              <p className="text-slate-600 mb-6 text-lg">
-                Get the best deal on {product.title} today
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href={product.affiliate}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-4 px-6 sm:px-8 rounded-xl font-bold text-base sm:text-lg hover:shadow-lg hover:shadow-violet-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  View Deal - ${product.price}
-                  <ArrowRight size={20} />
-                </a>
-                <Link
-                  to="/"
-                  className="bg-white text-violet-600 py-4 px-6 sm:px-8 rounded-xl font-bold text-base sm:text-lg border-2 border-violet-200 hover:bg-violet-50 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
-                >
-                  View More Products
-                </Link>
-              </div>
-              {/* Amazon Affiliate Disclosure */}
-              <p className="mt-6 text-xs text-slate-500 text-center">
-                As an Amazon Associate we earn from qualifying purchases. Price and availability subject to change.
-              </p>
-            </div>
           </div>
         </article>
 
