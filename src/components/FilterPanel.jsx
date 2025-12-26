@@ -189,7 +189,7 @@ export default function FilterPanel({
           )}
 
           {/* Clear Filters */}
-          {(minRating > 0 || priceRange[1] < 500 || selectedBadges.length > 0) && (
+          {(minRating > 0 || priceRange[0] > 0 || priceRange[1] < 500 || selectedBadges.length > 0) && (
             <button
               onClick={() => {
                 setMinRating(0);
