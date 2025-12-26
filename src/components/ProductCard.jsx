@@ -69,6 +69,18 @@ export default function ProductCard({ product, index }) {
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-2.5 px-3 rounded-xl font-semibold text-sm text-center hover:shadow-lg hover:shadow-violet-200 transition-all group/btn flex items-center justify-center gap-1.5 whitespace-nowrap"
+            onClick={() => {
+              // Track affiliate click
+              if (typeof gtag !== 'undefined') {
+                gtag('event', 'affiliate_click', {
+                  event_category: 'Affiliate',
+                  event_label: product.title,
+                  value: product.price,
+                  product_category: product.category,
+                  product_price: product.price
+                });
+              }
+            }}
           >
             <span>View on Amazon</span>
             <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform flex-shrink-0" />

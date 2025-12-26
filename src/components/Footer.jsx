@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
 
 export default function Footer() {
@@ -33,8 +34,19 @@ export default function Footer() {
               CandidFindings
             </p>
           </div>
-          <p className="text-sm text-slate-400">
-            Honest product reviews and candid findings © 2025
+          <p className="text-sm text-slate-400 mb-4">
+            Honest product reviews and candid findings
+          </p>
+          <div className="flex gap-6 text-sm">
+            <Link to="/privacy-policy" className="text-slate-400 hover:text-violet-400 transition-colors">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="text-slate-400 hover:text-violet-400 transition-colors">
+              Terms of Service
+            </Link>
+          </div>
+          <p className="text-xs text-slate-500 mt-4">
+            © 2025 CandidFindings. All rights reserved.
           </p>
         </div>
       </div>

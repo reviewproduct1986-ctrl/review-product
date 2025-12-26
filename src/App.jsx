@@ -2,8 +2,10 @@ import React, { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProductListing from './pages/ProductListing';
 
-// Lazy load ReviewPage - only loads when user visits a review
+// Lazy load pages - only loads when user visits
 const ReviewPage = lazy(() => import('./ReviewPage.jsx'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy.jsx'));
+const TermsOfService = lazy(() => import('./pages/TermsOfService.jsx'));
 
 // Loading component for lazy routes
 function RouteLoader() {
@@ -28,6 +30,22 @@ export default function App() {
           element={
             <Suspense fallback={<RouteLoader />}>
               <ReviewPage />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/privacy-policy" 
+          element={
+            <Suspense fallback={<RouteLoader />}>
+              <PrivacyPolicy />
+            </Suspense>
+          } 
+        />
+        <Route 
+          path="/terms" 
+          element={
+            <Suspense fallback={<RouteLoader />}>
+              <TermsOfService />
             </Suspense>
           } 
         />

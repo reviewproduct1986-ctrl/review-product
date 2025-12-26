@@ -106,6 +106,54 @@ export default function ReviewPage() {
         
         {/* Canonical URL */}
         <link rel="canonical" href={`https://candidfindings.com/reviews/${blog.slug}`} />
+        
+        {/* Schema.org Structured Data - Product with Review */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title,
+            "image": product.image,
+            "description": blog.excerpt || blog.content.substring(0, 160),
+            "brand": {
+              "@type": "Brand",
+              "name": product.category
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": product.price,
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock",
+              "url": product.affiliate,
+              "seller": {
+                "@type": "Organization",
+                "name": "Amazon"
+              }
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating,
+              "bestRating": "5",
+              "worstRating": "1",
+              "reviewCount": product.reviews
+            },
+            "review": {
+              "@type": "Review",
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": product.rating,
+                "bestRating": "5",
+                "worstRating": "1"
+              },
+              "author": {
+                "@type": "Organization",
+                "name": "CandidFindings"
+              },
+              "datePublished": blog.publishDate || new Date().toISOString().split('T')[0],
+              "reviewBody": blog.excerpt || blog.content.substring(0, 200)
+            }
+          })}
+        </script>
       </Helmet>
 
       {/* Header */}
@@ -195,6 +243,18 @@ export default function ReviewPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3 px-8 rounded-xl font-bold text-base hover:shadow-lg hover:shadow-violet-200 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                  onClick={() => {
+                  // Track affiliate click
+                  if (typeof gtag !== 'undefined') {
+                    gtag('event', 'affiliate_click', {
+                      event_category: 'Affiliate',
+                      event_label: product.title,
+                      value: product.price,
+                      product_category: product.category,
+                      product_price: product.price
+                    });
+                  }
+                }}
                 >
                   View on Amazon
                   <ArrowRight size={20} />
