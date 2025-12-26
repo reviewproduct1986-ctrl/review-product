@@ -91,9 +91,9 @@ export default function ProductCard({ product, index }) {
             </div>
           )}
           
-          {/* Affiliate Disclosure */}
-          <p className="text-xs text-slate-500 text-center mt-1">
-            <span className="text-violet-600">*</span> Affiliate link - We may earn a commission
+          {/* Amazon Affiliate Disclosure */}
+          <p className="text-[10px] text-slate-400 text-center mt-2 leading-tight">
+            As an Amazon Associate we earn from qualifying purchases
           </p>
         </div>
       </div>

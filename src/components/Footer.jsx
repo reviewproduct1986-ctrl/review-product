@@ -5,17 +5,21 @@ export default function Footer() {
   return (
     <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Affiliate Disclosure */}
+        {/* Amazon Affiliate Disclosure */}
         <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 mb-8">
           <h3 className="text-base font-semibold text-white mb-3 flex items-center gap-2">
-            <span className="text-violet-400">ⓘ</span> Affiliate Disclosure
+            <span className="text-violet-400">ⓘ</span> Amazon Affiliate Disclosure
           </h3>
-          <p className="text-sm text-slate-300 leading-relaxed">
-            GetProductOpinion.com participates in various affiliate marketing programs, which means we may earn 
-            commissions on purchases made through our links to retailer sites. These commissions come at no 
-            additional cost to you. We only recommend products we genuinely believe in, and our editorial content 
-            is not influenced by affiliate partnerships. When you click on links to products and make a purchase, 
-            we may receive a commission that helps support our site. Thank you for your support!
+          <p className="text-sm text-slate-300 leading-relaxed mb-3">
+            GetProductOpinion.com is a participant in the Amazon Services LLC Associates Program, 
+            an affiliate advertising program designed to provide a means for sites to earn 
+            advertising fees by advertising and linking to Amazon.com. As an Amazon Associate, 
+            we earn from qualifying purchases.
+          </p>
+          <p className="text-xs text-slate-400">
+            Product prices and availability are accurate as of the date/time indicated and are subject 
+            to change. Any price and availability information displayed on Amazon.com at the time of 
+            purchase will apply to the purchase of this product.
           </p>
         </div>
 

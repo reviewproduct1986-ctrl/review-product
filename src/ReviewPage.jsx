@@ -270,9 +270,9 @@ export default function ReviewPage() {
                   View More Products
                 </Link>
               </div>
-              {/* Affiliate Disclosure - Subtle */}
+              {/* Amazon Affiliate Disclosure */}
               <p className="mt-6 text-xs text-slate-500 text-center">
-                This is an affiliate link. We may earn a commission at no additional cost to you.
+                As an Amazon Associate we earn from qualifying purchases. Price and availability subject to change.
               </p>
             </div>
           </div>
